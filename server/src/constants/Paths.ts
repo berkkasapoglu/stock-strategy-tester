@@ -13,5 +13,6 @@ export default {
   },
   Report: {
     Base: '/report',
+    Get: '/',
   },
 } as const;
