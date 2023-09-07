@@ -2,7 +2,6 @@
  * Miscellaneous shared functions go here.
  */
 
-
 /**
  * Get a random number between 1 and 1,000,000,000,000
  */
@@ -19,4 +18,10 @@ export function tick(milliseconds: number): Promise<void> {
       resolve();
     }, milliseconds);
   });
+}
+
+export function enumKeys<O extends object, K extends keyof O = keyof O>(
+  obj: O
+): K[] {
+  return Object.keys(obj).filter((k) => !Number.isNaN(k)) as K[];
 }

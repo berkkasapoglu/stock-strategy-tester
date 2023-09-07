@@ -1,13 +1,12 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
-import ReportService from '@src/services/ReportService';
+import ReportService from '@src/services/report/ReportService';
 import { IReq, IRes } from '../types/express/misc';
 
-// **** Functions **** //
+async function getAll(_: IReq, res: IRes) {
+  const report = await ReportService.getReport();
 
-function getAll(_: IReq, res: IRes) {
-  const report = ReportService.getReport();
-  return res.status(HttpStatusCodes.OK).json({ report });
+  return res.status(HttpStatusCodes.OK).json(report);
 }
 
 export default {
