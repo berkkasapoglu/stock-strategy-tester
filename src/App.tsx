@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import axios from 'axios';
-import { config } from './constants';
-import { Table } from 'antd';
+import { Layout } from 'antd';
+import { Content } from 'antd/es/layout/layout';
+import Sider from 'antd/es/layout/Sider';
+import classes from './App.module.css';
+import Report from './pages/report/Report';
+import Title from 'antd/es/typography/Title';
 
 export enum ReportActionResponse {
   Buy = 'Buy',
@@ -18,68 +19,16 @@ export interface IReport {
 }
 
 function App() {
-  const [actionReport, setActionReport] = useState<IReport[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      const res = await axios.get(config.url + '/report');
-
-      setActionReport(res.data);
-    })();
-  }, []);
-
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        width: '100%',
-        gap: 50,
-      }}
-    >
-      <Table
-        style={{ width: '100%' }}
-        dataSource={actionReport.map((row, idx) => ({ key: idx, ...row }))}
-        columns={[
-          {
-            title: 'Ticket',
-            dataIndex: 'ticket',
-            key: 'ticket',
-          },
-          {
-            title: 'Price',
-            dataIndex: 'price',
-            key: 'price',
-          },
-          {
-            title: 'Lot',
-            dataIndex: 'lot',
-            key: 'lot',
-          },
-        ]}
-      ></Table>
-      <Table
-        style={{ width: '100%' }}
-        dataSource={actionReport.map((row, idx) => ({ key: idx, ...row }))}
-        columns={[
-          {
-            title: 'Ticket',
-            dataIndex: 'ticket',
-            key: 'ticket',
-          },
-          {
-            title: 'Price',
-            dataIndex: 'price',
-            key: 'price',
-          },
-          {
-            title: 'Lot',
-            dataIndex: 'lot',
-            key: 'lot',
-          },
-        ]}
-      ></Table>
-    </div>
+    <>
+      <Layout hasSider className={classes.container}>
+        <Sider>Sider</Sider>
+        <Content className={classes.content}>
+          <Title className={classes.pageTitle}>Design</Title>
+          <Report />
+        </Content>
+      </Layout>
+    </>
   );
 }
 

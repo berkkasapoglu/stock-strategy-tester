@@ -1,0 +1,16 @@
+#root {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.container {
+  height: 100vh;
+}
+
+.content {
+  padding: 25px 50px;
+}
+
+.pageTitle {
+  margin-bottom: 25px !important;
+}
