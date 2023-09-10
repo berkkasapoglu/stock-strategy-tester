@@ -1,35 +1,24 @@
-import { Layout } from 'antd';
-import { Content } from 'antd/es/layout/layout';
-import Sider from 'antd/es/layout/Sider';
-import classes from './App.module.css';
-import Report from './pages/report/Report';
-import Title from 'antd/es/typography/Title';
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from 'react-router-dom';
+import RootLayout from './layouts/RootLayout';
+import baseRoutes from './routes/base.routes';
 
-export enum ReportActionResponse {
-  Buy = 'Buy',
-  Sell = 'Sell',
-}
-
-export interface IReport {
-  ticket: string;
-  price: number;
-  lot: number;
-  date: Date;
-  action: ReportActionResponse;
-}
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      {baseRoutes.map((route, idx) => {
+        return <Route key={idx} path={route.path} element={route.element} />;
+      })}
+    </Route>
+  )
+);
 
 function App() {
-  return (
-    <>
-      <Layout hasSider className={classes.container}>
-        <Sider>Sider</Sider>
-        <Content className={classes.content}>
-          <Title className={classes.pageTitle}>Design</Title>
-          <Report />
-        </Content>
-      </Layout>
-    </>
-  );
+  return <RouterProvider router={router}></RouterProvider>;
 }
 
 export default App;

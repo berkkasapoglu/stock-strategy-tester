@@ -1,10 +1,10 @@
 import { Table } from 'antd';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { IReport } from '../../App';
 import { config } from '../../constants';
 import classes from './Report.module.scss';
 import { REPORT_BUY_COLUMNS, REPORT_SELL_COLUMNS } from './config';
+import { IReport } from './types/Report.types';
 
 function Report() {
   const [actionReport, setActionReport] = useState<IReport[]>([]);
