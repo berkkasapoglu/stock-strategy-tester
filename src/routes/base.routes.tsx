@@ -1,5 +1,8 @@
-import { sidebarRoutes } from './sidebar.routes';
+import RootLayout from '../layouts/RootLayout';
+import { IRoute, sidebarRoutes } from './sidebar.routes';
 
-const baseRoutes = [...sidebarRoutes];
+const baseRoutes: IRoute[] = [
+  { element: <RootLayout />, children: [...sidebarRoutes] },
+];
 
 export default baseRoutes;

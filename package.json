@@ -12,11 +12,13 @@
     "start": "concurrently \"npm run server\" \"npm run dev\""
   },
   "dependencies": {
+    "@types/lodash": "^4.14.199",
     "antd": "^5.8.6",
     "axios": "^1.5.0",
     "domhandler": "^5.0.3",
     "domutils": "^3.1.0",
     "htmlparser2": "^9.0.0",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0"

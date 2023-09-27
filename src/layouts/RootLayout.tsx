@@ -1,72 +1,69 @@
-import { Space, Layout, Menu, MenuProps } from 'antd';
+import { Layout, Menu, MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
-import { Header, Content } from 'antd/es/layout/layout';
+import { Content } from 'antd/es/layout/layout';
 import {
   useNavigate,
   Outlet,
   matchRoutes,
   useLocation,
 } from 'react-router-dom';
-import { sidebarRoutes } from '../routes/sidebar.routes';
+import { IRoute, sidebarRoutes } from '../routes/sidebar.routes';
 import classes from './RootLayout.module.scss';
 import Title from 'antd/es/typography/Title';
 import baseRoutes from '../routes/base.routes';
+import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 
-const headerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  color: '#fff',
-  height: 64,
-  paddingInline: 50,
-  lineHeight: '64px',
-  backgroundColor: '#7dbcea',
+const getSidebarRoutes = (routes: IRoute[]): MenuItemType[] => {
+  const sidebarRoutes = routes.map((route) => {
+    return {
+      key: route.path || '',
+      label: route.title,
+      children: route.children && getSidebarRoutes(route.children),
+    };
+  });
+
+  return sidebarRoutes;
 };
+
+const sidebarItems = getSidebarRoutes(sidebarRoutes);
 
 function RootLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const onClick: MenuProps['onClick'] = (e) => {
-    const url = sidebarRoutes[parseInt(e.key)].path;
-    navigate(url);
+  const onClick: MenuProps['onClick'] = ({ keyPath }) => {
+    const path = keyPath.reverse().join('/');
+
+    navigate(path);
   };
 
   const getTitle = () => {
-    const matchedRoutes = matchRoutes(baseRoutes, location.pathname);
+    const matchedRoutes = matchRoutes(baseRoutes, location);
 
     if (!matchedRoutes) return;
 
-    const mathcedRoute = matchedRoutes.find(
-      (match) => match.pathname === location.pathname
-    );
-
-    return mathcedRoute?.route.pageTitle;
+    return matchedRoutes.slice(-1)[0].route.title;
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }} size={[0, 48]}>
-      <Layout>
-        <Header style={headerStyle}>Header</Header>
-        <Layout hasSider className={classes.container}>
-          <Sider>
-            <Menu
-              mode="inline"
-              onClick={onClick}
-              defaultSelectedKeys={['0']}
-              items={sidebarRoutes.map((route, idx) => {
-                return {
-                  key: idx,
-                  label: route.title,
-                };
-              })}
-            />
-          </Sider>
-          <Content className={classes.content}>
-            <Title className={classes.pageTitle}>{getTitle()}</Title>
-            <Outlet />
-          </Content>
-        </Layout>
+    <Layout>
+      <Layout hasSider className={classes.container}>
+        <Sider breakpoint="lg" collapsedWidth="0">
+          <div className={classes['demo-logo-vertical']} />
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={['']}
+            onClick={onClick}
+            items={sidebarItems}
+          />
+        </Sider>
+        <Content className={classes.content}>
+          <Title className={classes.pageTitle}>{getTitle()}</Title>
+          <Outlet />
+        </Content>
       </Layout>
-    </Space>
+    </Layout>
   );
 }
 export default RootLayout;

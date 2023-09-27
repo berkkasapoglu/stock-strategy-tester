@@ -1,6 +1,6 @@
 export enum ReportActionResponse {
-  Buy = 'Buy',
-  Sell = 'Sell',
+  Buy,
+  Sell,
 }
 
 export interface IReport {

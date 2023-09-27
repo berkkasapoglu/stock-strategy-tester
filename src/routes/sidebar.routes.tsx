@@ -1,9 +1,9 @@
 import Test from '../pages/test/Test';
 import Report from '../pages/report/Report';
+import { NonIndexRouteObject } from 'react-router-dom';
 
-interface IRoute {
-  path: string;
-  element: React.ReactNode;
+export interface IRoute extends NonIndexRouteObject {
+  path?: string;
   title?: string;
   pageTitle?: string;
   children?: IRoute[];
@@ -18,16 +18,8 @@ export const sidebarRoutes: IRoute[] = [
   },
   {
     title: 'Test',
-    path: 'test',
-    pageTitle: 'Test',
+    pageTitle: 'Test12',
+    path: 'test1',
     element: <Test />,
-    children: [
-      {
-        title: 'test1',
-        path: 'test1',
-        pageTitle: 'Test1',
-        element: <Test />,
-      },
-    ],
   },
 ];
