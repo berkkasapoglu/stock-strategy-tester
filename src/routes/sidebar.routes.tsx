@@ -1,13 +1,13 @@
 import Test from '../pages/test/Test';
 import Report from '../pages/report/Report';
-import { NonIndexRouteObject } from 'react-router-dom';
+import { RouteObject } from 'react-router-dom';
 
-export interface IRoute extends NonIndexRouteObject {
+export type IRoute = RouteObject & {
   path?: string;
   title?: string;
   pageTitle?: string;
   children?: IRoute[];
-}
+};
 
 export const sidebarRoutes: IRoute[] = [
   {
