@@ -3,71 +3,72 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { config } from '../../constants';
 import classes from './Report.module.scss';
-import { REPORT_BUY_COLUMNS, REPORT_SELL_COLUMNS } from './config';
+import { REPORT_BUY_COLUMNS } from './config';
 import { IReport, ReportActionResponse } from './types/Report.types';
 
+export interface IAction {
+  buy?: IReport;
+  sell?: IReport;
+  ticket: string;
+}
+
 function Report() {
-  const [actionReport, setActionReport] = useState<IReport[]>([]);
-  const [newReport, setNewReport] = useState<
-    { buy?: IReport; sell?: IReport }[]
-  >([]);
+  const [rawReport, setRawReport] = useState<IReport[]>([]);
+  const [actions, setActions] = useState<IAction[]>([]);
 
   useEffect(() => {
     (async () => {
       const res = await axios.get(config.url + '/report');
 
-      setActionReport(res.data);
+      setRawReport(res.data);
     })();
   }, []);
 
   useEffect(() => {
-    if (actionReport) {
-      const newReport = actionReport.map((info) => {
-        const matchedTickets = actionReport.filter(
-          (currentInfo) => currentInfo.ticket === info.ticket
+    if (!rawReport) return;
+    const actionReport: IAction[] = [];
+
+    rawReport.forEach((rawItem) => {
+      const isBuy = rawItem.action === ReportActionResponse.Buy;
+      const isSell = rawItem.action === ReportActionResponse.Sell;
+      if (!rawItem.lot || !rawItem.price) return;
+
+      if (isBuy) {
+        const item = actionReport.find(
+          (item) => item.ticket === rawItem.ticket && !item.buy
         );
 
-        return {
-          buy: matchedTickets.find(
-            (ticket) => ticket.action === ReportActionResponse.Buy
-          ),
-          sell: matchedTickets.find(
-            (ticket) => ticket.action === ReportActionResponse.Sell
-          ),
-        };
-      });
+        if (item) return (item.buy = rawItem);
 
-      setNewReport(newReport);
-    }
-  }, [actionReport]);
+        actionReport.push({ ticket: rawItem.ticket, buy: rawItem });
+      }
+
+      if (isSell) {
+        const item = actionReport.find(
+          (item) => item.ticket === rawItem.ticket && !item.sell
+        );
+
+        if (item) return (item.sell = rawItem);
+
+        actionReport.push({ ticket: rawItem.ticket, sell: rawItem });
+      }
+    });
+
+    setActions(actionReport);
+  }, [rawReport]);
+
+  console.log(actions.length);
 
   return (
     <>
-      {newReport.map((row) => {
-        return (
-          <div>
-            <span>{row.buy?.ticket} </span>
-            <span>Buy Price: {row.buy?.price} </span>
-            <span>Sell Price: {row.sell?.price} </span>
-          </div>
-        );
-      })}
       <div className={classes.container}>
         <Table
           className={classes.table}
-          dataSource={actionReport.map((row, idx) => ({
+          dataSource={actions.map((row, idx) => ({
             key: idx,
             ...row,
           }))}
           columns={REPORT_BUY_COLUMNS}
-        ></Table>
-        <Table
-          className={classes.table}
-          dataSource={actionReport.map((row, idx) => ({
-            key: idx,
-            ...row,
-          }))}
-          columns={REPORT_SELL_COLUMNS}
         ></Table>
       </div>
     </>
